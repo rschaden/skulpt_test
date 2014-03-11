@@ -7,23 +7,18 @@
 <script src="mode/python/python.js"></script>
 <link rel="stylesheet" href="lib/codemirror.css">
 <link rel="stylesheet" href="solarized.css">
-<style>
-.CodeMirror { height: 500px; }
-</style>
 </head>
 
 <body>
-<h3>Live Coding</h3>
-<a href="page2.html">Turtles</a>
+<h3>Turtles</h3>
+<a href="index.html">Live Coding</a>
 
 <script type="text/javascript">
-var sourceCode = "print 'Hello World'\nprint 'abc'";
+var sourceCode = "import turtle\n\nt = turtle.Turtle()\nt.shape('turtle')\n\nt.pencolor('red')\nt.speed(6)\n\nt.left(90)\nt.forward(50)\n\nt.right(45)\nt.forward(35)\nt.right(90)\nt.forward(35)\n\nt.right(45)\nt.forward(50)\n\nt.right(135)\nt.forward(71)\n\nt.right(135)\nt.forward(50)\n\nt.right(135)\nt.forward(71)\n\nt.left(135)\nt.forward(50)";
 
 var myCodeMirror = CodeMirror(document.body, { value: sourceCode, lineNumbers: true, mode: 'python', theme: 'solarized dark' } );
 // output functions are configurable.  This one just appends some text
 // to a pre element.
-
-myCodeMirror.on('inputRead', function() { runit(); });
 function outf(text) {
   var mypre = document.getElementById("output");
   mypre.innerHTML = mypre.innerHTML + text;
@@ -48,15 +43,14 @@ function runit() {
   Sk.configure({output:outf, read:builtinRead});
   eval(Sk.importMainWithBody("<stdin>",false,prog));
 }
-
-$(document).ready(runit);
 </script>
 
 <form>
 <button type="button" onclick="runit()">Run</button>
 </form>
-Output:
 <pre id="output" ></pre>
+<!-- If you want turtle graphics include a canvas -->
+<canvas id="mycanvas" style='background: whitesmoke;'></canvas>
 
 </body>
 
