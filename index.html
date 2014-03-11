@@ -17,43 +17,43 @@
 <a href="page2.html">Turtles</a>
 
 <script type="text/javascript">
-var sourceCode = "print 'Hello World'\nprint 'abc'";
+$(document).ready(function() {
+  var myCodeMirror = CodeMirror.fromTextArea(document.getElementById('code'),
+  { lineNumbers: true, mode: 'python', theme: 'solarized dark' } );
 
-var myCodeMirror = CodeMirror(document.body, { value: sourceCode, lineNumbers: true, mode: 'python', theme: 'solarized dark' } );
-// output functions are configurable.  This one just appends some text
-// to a pre element.
+  myCodeMirror.on('inputRead', function() { runit(); });
+  function outf(text) {
+    var mypre = document.getElementById("output");
+    mypre.innerHTML = mypre.innerHTML + text;
+  }
+  function builtinRead(x) {
+    if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
+      throw "File not found: '" + x + "'";
+    return Sk.builtinFiles["files"][x];
+  }
 
-myCodeMirror.on('inputRead', function() { runit(); });
-function outf(text) {
-  var mypre = document.getElementById("output");
-  mypre.innerHTML = mypre.innerHTML + text;
-}
-function builtinRead(x) {
-  if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
-    throw "File not found: '" + x + "'";
-  return Sk.builtinFiles["files"][x];
-}
+  function runit() {
+    var prog = myCodeMirror.getValue();
+    var mypre = document.getElementById("output");
+    mypre.innerHTML = '';
+    Sk.canvas = "mycanvas";
+    Sk.pre = "output";
+    Sk.configure({output:outf, read:builtinRead});
+    eval(Sk.importMainWithBody("<stdin>",false,prog));
+  }
 
-// Here's everything you need to run a python program in skulpt
-// grab the code from your textarea
-// get a reference to your pre element for output
-// configure the output function
-// call Sk.importMainWithBody()
-function runit() {
-  var prog = myCodeMirror.getValue();
-  var mypre = document.getElementById("output");
-  mypre.innerHTML = '';
-  Sk.canvas = "mycanvas";
-  Sk.pre = "output";
-  Sk.configure({output:outf, read:builtinRead});
-  eval(Sk.importMainWithBody("<stdin>",false,prog));
-}
-
-$(document).ready(runit);
+  runit();
+});
 </script>
 
 <form>
-<button type="button" onclick="runit()">Run</button>
+<textarea id="code" cols="40" rows="10">
+print "Hello World"
+
+for i in range(4):
+  print 'Hello', i
+</textarea>
+<br />
 </form>
 Output:
 <pre id="output" ></pre>

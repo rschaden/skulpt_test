@@ -14,42 +14,69 @@
 <a href="index.html">Live Coding</a>
 
 <script type="text/javascript">
-var sourceCode = "import turtle\n\nt = turtle.Turtle()\nt.shape('turtle')\n\nt.pencolor('red')\nt.speed(6)\n\nt.left(90)\nt.forward(50)\n\nt.right(45)\nt.forward(35)\nt.right(90)\nt.forward(35)\n\nt.right(45)\nt.forward(50)\n\nt.right(135)\nt.forward(71)\n\nt.right(135)\nt.forward(50)\n\nt.right(135)\nt.forward(71)\n\nt.left(135)\nt.forward(50)";
+$(document).ready(function() {
+  var myCodeMirror = CodeMirror.fromTextArea(document.getElementById('code'),
+  { lineNumbers: true, mode: 'python', theme: 'solarized dark' } );
 
-var myCodeMirror = CodeMirror(document.body, { value: sourceCode, lineNumbers: true, mode: 'python', theme: 'solarized dark' } );
-// output functions are configurable.  This one just appends some text
-// to a pre element.
-function outf(text) {
-  var mypre = document.getElementById("output");
-  mypre.innerHTML = mypre.innerHTML + text;
-}
-function builtinRead(x) {
-  if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
-    throw "File not found: '" + x + "'";
-  return Sk.builtinFiles["files"][x];
-}
+  $('#run-button').click(runit);
 
-// Here's everything you need to run a python program in skulpt
-// grab the code from your textarea
-// get a reference to your pre element for output
-// configure the output function
-// call Sk.importMainWithBody()
-function runit() {
-  var prog = myCodeMirror.getValue();
-  var mypre = document.getElementById("output");
-  mypre.innerHTML = '';
-  Sk.canvas = "mycanvas";
-  Sk.pre = "output";
-  Sk.configure({output:outf, read:builtinRead});
-  eval(Sk.importMainWithBody("<stdin>",false,prog));
-}
+  function outf(text) {
+    var mypre = document.getElementById("output");
+    mypre.innerHTML = mypre.innerHTML + text;
+  }
+  function builtinRead(x) {
+    if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
+      throw "File not found: '" + x + "'";
+    return Sk.builtinFiles["files"][x];
+  }
+
+  function runit() {
+    var prog = myCodeMirror.getValue();
+    var mypre = document.getElementById("output");
+    mypre.innerHTML = '';
+    Sk.canvas = "mycanvas";
+    Sk.pre = "output";
+    Sk.configure({output:outf, read:builtinRead});
+    eval(Sk.importMainWithBody("<stdin>",false,prog));
+  }
+});
 </script>
 
 <form>
-<button type="button" onclick="runit()">Run</button>
+<textarea id="code" cols="40" rows="10">
+import turtle
+
+t = turtle.Turtle()
+t.shape('turtle')
+t.pencolor('red')
+t.speed(6)
+
+t.left(90)
+t.forward(50)
+
+t.right(45)
+t.forward(35)
+t.right(90)
+t.forward(35)
+
+t.right(45)
+t.forward(50)
+
+t.right(135)
+t.forward(71)
+
+t.right(135)
+t.forward(50)
+
+t.right(135)
+t.forward(71)
+
+t.left(135)
+t.forward(50)
+</textarea>
+<button type="button" id='run-button'>Run</button>
 </form>
 <pre id="output" ></pre>
-<!-- If you want turtle graphics include a canvas -->
 <canvas id="mycanvas" style='background: whitesmoke;'></canvas>
 
 </body>
